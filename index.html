@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Slate</title>
+<meta name="description" content="A fast, distraction-free scratchpad and whiteboard for writing and drawing by hand.">
+<meta name="theme-color" content="#D8DAE6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#07070A" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Slate">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="frame">
+<div class="app" id="app">
+
+  <header class="tabbar">
+    <div class="tabs" id="tabsList" role="tablist"></div>
+    <button class="tab-add" id="addTabBtn" title="New page (Ctrl+N)" aria-label="New page">+</button>
+    <div class="tabbar-actions">
+      <button class="icon-btn" id="helpBtn" title="Shortcuts &amp; tips" aria-label="Help">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.9.8c0 1.7-2.4 2-2.4 3.7"/><circle cx="12" cy="17" r="0.4" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn" id="themeToggleBtn" title="Theme" aria-label="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <nav class="toolrail" id="toolrail">
+      <div class="tool-group" id="toolButtons">
+        <button class="tool-btn active" data-tool="pen" title="Pen (1)" aria-label="Pen">
+          <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 19.8l.9-4 12-12a1.7 1.7 0 0 1 2.4 0l.7.7a1.7 1.7 0 0 1 0 2.4l-12 12-4 .9z"/><path d="M14.3 5l4.7 4.7"/><circle cx="6.3" cy="17.7" r="0.9" fill="currentColor" stroke="none"/></svg>
+          <span class="tool-label">Pen</span>
+        </button>
+        <button class="tool-btn" data-tool="highlighter" title="Marker (2)" aria-label="Marker">
+          <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 10.5l4.8 4.8-5.6 4.2H3.5v-4.2z"/><path d="M8.5 10.5L16 3a2.3 2.3 0 0 1 3.2 3.2L12 13.5"/><path d="M3.5 19.5h6.2"/></svg>
+          <span class="tool-label">Marker</span>
+        </button>
+        <button class="tool-btn" data-tool="eraser" title="Eraser (3)" aria-label="Eraser">
+          <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="6" width="14" height="10.5" rx="2.6"/><line x1="5" y1="10.8" x2="19" y2="10.8"/><line x1="4" y1="19.3" x2="20" y2="19.3"/></svg>
+          <span class="tool-label">Eraser</span>
+        </button>
+        <button class="tool-btn" data-tool="laser" title="Presentation pointer (4)" aria-label="Laser pointer">
+          <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.3" fill="currentColor" stroke="none"/><path d="M12 3.2v2.6M12 18.2v2.6M3.2 12h2.6M18.2 12h2.6M6.1 6.1l1.8 1.8M16.1 16.1l1.8 1.8M17.9 6.1l-1.8 1.8M7.9 16.1l-1.8 1.8" opacity="0.65"/></svg>
+          <span class="tool-label">Laser</span>
+        </button>
+      </div>
+
+      <div class="tool-group">
+        <button class="style-chip" id="styleChipBtn" title="Color &amp; thickness" aria-label="Color and thickness">
+          <span class="dot" id="styleChipDot" style="width:14px;height:14px;"></span>
+        </button>
+        <button class="icon-btn" id="undoBtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7L3 11l4 4"/><path d="M3 11h11a6 6 0 0 1 0 12h-2"/></svg>
+        </button>
+        <button class="icon-btn" id="redoBtn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled>
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7l4 4-4 4"/><path d="M21 11H10a6 6 0 0 0 0 12h2"/></svg>
+        </button>
+      </div>
+
+      <div class="tool-group" id="secondaryGroup">
+        <button class="icon-btn" id="pageSettingsBtn" title="Page settings" aria-label="Page settings">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </button>
+        <button class="icon-btn" id="palmToggleBtn" title="Palm rejection (stylus only)" aria-label="Palm rejection">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V5.5a1.5 1.5 0 0 1 3 0V10"/><path d="M10 10V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M13 10V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M16 11V8.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.4L3.3 13a1.4 1.4 0 0 1 2.3-1.6L7 13"/></svg>
+        </button>
+        <button class="icon-btn danger" id="clearBtn" title="Clear page" aria-label="Clear page">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.8c0-.44.36-.8.8-.8h4.4c.44 0 .8.36.8.8V7"/><path d="M6 7l1 13.2c.04.98.85 1.8 1.83 1.8h6.34c.98 0 1.79-.82 1.83-1.8L18 7"/></svg>
+        </button>
+        <button class="icon-btn" id="exportBtn" title="Save as image" aria-label="Save as image">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+        </button>
+      </div>
+
+      <div class="tool-group" id="moreGroup">
+        <button class="icon-btn" id="moreBtn" title="More" aria-label="More options">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="canvas-wrap" id="canvasWrap">
+      <canvas id="paperCanvas"></canvas>
+      <canvas id="drawCanvas"></canvas>
+      <canvas id="overlayCanvas"></canvas>
+    </main>
+  </div>
+</div>
+<div class="copyright">© Data Horse</div>
+</div>
+
+<!-- Style popover: color + thickness -->
+<div class="popover" id="stylePopover" hidden>
+  <h3 class="pop-title" id="stylePopoverTitle">Pen</h3>
+  <div id="colorSection">
+    <h4>Color</h4>
+    <div class="swatches" id="swatches"></div>
+  </div>
+  <h4>Thickness</h4>
+  <div class="thickness-row">
+    <input type="range" id="thicknessSlider" min="1" max="60" value="4">
+    <div class="thickness-preview"><span class="dot" id="thicknessDot"></span></div>
+  </div>
+</div>
+
+<!-- Page settings popover -->
+<div class="popover" id="pageSettingsPopover" hidden>
+  <h3 class="pop-title">Page settings</h3>
+  <h4>Name</h4>
+  <input type="text" id="pageNameInput" maxlength="24" style="width:100%; margin-bottom:14px;">
+  <h4>Paper style</h4>
+  <div class="bg-options" id="bgOptions">
+    <button class="bg-opt" data-bg="plain" title="Plain"></button>
+    <button class="bg-opt" data-bg="lines" title="Ruled"></button>
+    <button class="bg-opt" data-bg="grid" title="Grid"></button>
+    <button class="bg-opt" data-bg="dots" title="Dotted"></button>
+    <button class="bg-opt" data-bg="handwriting" title="Handwriting practice"></button>
+  </div>
+  <div class="field-row">
+    <label for="palmSwitch2">Palm rejection</label>
+    <div class="switch" id="palmSwitch2"></div>
+  </div>
+  <button class="text-btn" id="deleteTabBtn">Delete this page</button>
+</div>
+
+<!-- Mobile overflow menu -->
+<div class="popover menu-popover" id="morePopover" hidden>
+  <button class="menu-item" id="moreSettingsBtn">
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    <span>Page settings</span>
+  </button>
+  <button class="menu-item" id="moreClearBtn">
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.8c0-.44.36-.8.8-.8h4.4c.44 0 .8.36.8.8V7"/><path d="M6 7l1 13.2c.04.98.85 1.8 1.83 1.8h6.34c.98 0 1.79-.82 1.83-1.8L18 7"/></svg>
+    <span>Clear page</span>
+  </button>
+  <button class="menu-item" id="moreExportBtn">
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+    <span>Save as image</span>
+  </button>
+</div>
+
+<!-- Generic confirm modal -->
+<div class="modal-overlay" id="confirmOverlay" hidden>
+  <div class="modal">
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmBody"></p>
+    <div class="row">
+      <button class="btn" id="confirmCancel">Cancel</button>
+      <button class="btn danger" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal -->
+<div class="modal-overlay" id="helpOverlay" hidden>
+  <div class="modal">
+    <h3>Slate</h3>
+    <p>A scratchpad for quick handwriting, sketches and working things out — pen, marker, eraser, and a fading laser pointer for talking through what you've drawn. Everything is saved on this device automatically, per page.</p>
+    <div class="shortcuts-list">
+      <div><span>Pen / Marker / Eraser / Laser</span><kbd>1–4</kbd></div>
+      <div><span>Thinner / Thicker</span><kbd>[ / ]</kbd></div>
+      <div><span>Undo / Redo</span><kbd>⌘Z / ⌘⇧Z</kbd></div>
+      <div><span>New page</span><kbd>⌘N</kbd></div>
+      <div><span>Clear page</span><kbd>⌘⌫</kbd></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="helpCloseBtn">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
